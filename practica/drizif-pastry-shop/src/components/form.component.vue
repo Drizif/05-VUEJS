@@ -187,7 +187,11 @@
 
           <hr class="my-4" />
 
-          <button class="w-100 btn btn-primary btn-lg" type="submit">
+          <button
+            class="w-100 btn btn-primary btn-lg"
+            type="submit"
+            @click="validateForm()"
+          >
             Pagar
           </button>
         </form>
@@ -200,39 +204,76 @@
 export default {
   name: "Form",
   mounted() {
-    const forms = document.querySelectorAll(".needs-validation");
+    this.clearForm();
+  },
+  methods: {
+    validateForm() {
+      const forms = document.querySelectorAll(".needs-validation");
 
-    Array.prototype.slice.call(forms).forEach((form) => {
-      form.addEventListener(
-        "submit",
-        (event) => {
-          if (!form.checkValidity()) {
-            event.preventDefault();
-            event.stopPropagation();
-          }
+      Array.prototype.slice.call(forms).forEach((form) => {
+        form.addEventListener(
+          "submit",
+          (event) => {
+            if (!form.checkValidity()) {
+              event.preventDefault();
+              event.stopPropagation();
+            }
 
-          form.classList.add("was-validated");
-          if (form.checkValidity()) {
-            const products = this.$store.getters.getCart;
-            const requests = {
-              firstName: document.getElementById("firstName").value,
-              lastName: document.getElementById("lastName").value,
-              email: document.getElementById("email").value,
-              address: document.getElementById("address").value,
-              tel: document.getElementById("tel").value,
-              cardName: document.getElementById("cc-name").value,
-              cardNumber: document.getElementById("cc-number").value,
-              expiration: document.getElementById("cc-expiration").value,
-              products,
-            };
+            form.classList.add("was-validated");
+            if (form.checkValidity()) {
+              const products = this.$store.getters.getCart;
 
-            this.$store.commit("updateOrders", requests);
-            this.$router.push("/");
-          }
-        },
-        false
-      );
-    });
+              const requests = {
+                firstName: document.getElementById("firstName").value,
+                lastName: document.getElementById("lastName").value,
+                email: document.getElementById("email").value,
+                address: document.getElementById("address").value,
+                tel: document.getElementById("tel").value,
+                cardName: document.getElementById("cc-name").value,
+                cardNumber: document.getElementById("cc-number").value,
+                expiration: document.getElementById("cc-expiration").value,
+                products,
+              };
+              this.updateRemaining(products);
+              this.$store.commit("updateOrders", requests);
+              this.$router.push("/");
+            }
+          },
+          false
+        );
+      });
+    },
+    updateRemaining(products) {
+      const idxProducts = products.data.reduce(
+        (a, b) => ({ ...a, [b.name]: b }),
+        {}
+      ); // Diccionario
+      const updatedProducts = this.$store.getters.getProducts.map((e) => {
+        const iProducts = idxProducts[e.id];
+        let remaining = e.remaining;
+        if (iProducts) {
+          remaining -= iProducts.quantity;
+        }
+        return {
+          id: e.id,
+          name: e.name,
+          lbl: e.lbl,
+          price: e.price,
+          remaining,
+        };
+      });
+      this.$store.commit("updateProducts", updatedProducts);
+    },
+    clearForm() {
+      document.getElementById("firstName").value = null;
+      document.getElementById("lastName").value = null;
+      document.getElementById("email").value = null;
+      document.getElementById("address").value = null;
+      document.getElementById("tel").value = null;
+      document.getElementById("cc-name").value = null;
+      document.getElementById("cc-number").value = null;
+      document.getElementById("cc-expiration").value = null;
+    },
   },
 };
 </script>

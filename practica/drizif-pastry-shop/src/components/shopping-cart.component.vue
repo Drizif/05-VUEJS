@@ -216,7 +216,7 @@
           >
             <div class="row">
               <div class="col">
-                <label id="GlobosLbl" for="Globos">Globos(Adorno)</label>
+                <label id="GlobosLbl" for="Globos">Globos</label>
               </div>
               <div class="col">
                 <p id="description6" align="justify">
@@ -370,11 +370,8 @@ export default {
     CombineOrnament,
   },
   mounted() {
-    this.$store.getters.getProducts.forEach((product) => {
-      const productElement = document.getElementById(`${product.lbl}`);
-      if (productElement)
-        productElement.append(` restantes: ${product.remaining}`);
-    });
+    this.clearForm();
+    this.setRestantes();
   },
   methods: {
     setTotal() {
@@ -408,6 +405,21 @@ export default {
         document.querySelector(".btn-close").click();
         this.$router.push("form");
       }
+    },
+    setRestantes() {
+      this.$store.getters.getProducts.forEach((product) => {
+        const productElement = document.getElementById(`${product.lbl}`);
+        if (productElement) {
+          const message =
+            productElement.textContent.split(" ")[0] +
+            ` restantes: ${product.remaining}`;
+          productElement.textContent = message;
+        }
+      });
+    },
+    clearForm() {
+      const inputs = document.querySelectorAll(".form-control");
+      inputs.forEach((element) => (element.value = 0));
     },
   },
 };

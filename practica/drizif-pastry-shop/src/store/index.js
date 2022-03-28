@@ -101,6 +101,9 @@ export default createStore({
     },
     updateOrders(state, orders){
       state.orders.push(orders);
+    },
+    updateProducts(state, products){
+      state.products = products;
     }
   },
   actions: {
