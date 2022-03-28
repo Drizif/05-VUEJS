@@ -34,8 +34,11 @@
             </li>
             <li class="nav-item">
               <h5>
-                <router-link to="/login">
+                <router-link v-if="!$store.getters.checkSession" to="/login">
                   <a class="nav-link">Iniciar sesion</a>
+                </router-link>
+                <router-link v-if="$store.getters.checkSession" to="/order">
+                  <a class="nav-link">Pedidos</a>
                 </router-link>
               </h5>
             </li>

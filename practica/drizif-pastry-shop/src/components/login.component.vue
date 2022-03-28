@@ -33,13 +33,13 @@
         <div class="checkbox mb-3">
           <br />
         </div>
-        <!-- <button
+        <button
           class="w-100 btn btn-lg btn-primary"
           type="button"
-          onclick="login()"
+          @click="checkLogin()"
         >
           Ingresar
-        </button> -->
+        </button>
       </form>
     </main>
   </div>
@@ -48,6 +48,14 @@
 <script>
 export default {
   name: "Login",
+  methods: {
+    checkLogin() {
+      const user = document.getElementById("user").value;
+      const pass = document.getElementById("pass").value;
+      this.$store.commit("checkLogin", { user, pass });
+      if (this.$store.getters.checkSession) this.$router.push("order");
+    },
+  },
 };
 </script>
 

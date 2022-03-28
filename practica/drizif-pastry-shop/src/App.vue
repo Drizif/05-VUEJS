@@ -18,12 +18,12 @@ li a {
 }
 
 .container {
-  background-color: #ffc5ed;
+  background-color: #ffc5ed !important;
   border-radius: 1rem;
 }
 
 .navbar {
-  background-color: #ffc5ed;
+  background-color: #ffc5ed !important;
 }
 
 body {
@@ -40,11 +40,11 @@ body {
 }
 
 .badge {
-  background-color: #89b6ff;
+  background-color: #89b6ff !important;
 }
 
 .card {
-  background-color: #89b6ff;
+  background-color: #89b6ff !important;
 }
 
 .card-img-top {

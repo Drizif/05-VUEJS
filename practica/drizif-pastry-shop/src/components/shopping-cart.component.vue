@@ -303,11 +303,11 @@
             class="btn btn-primary"
             data-bs-toggle="modal"
             data-bs-target="#exampleModal"
-            onclick="setTotal()"
+            @Click="setTotal()"
           >
             Proceder al pago
           </button>
-          <div>
+          <div id="Modal">
             <!-- Modal -->
             <div
               class="modal fade"
@@ -343,9 +343,9 @@
                   </div>
                   <div class="modal-footer">
                     <button
-                      type="button"
+                      type="submit"
                       class="btn btn-primary"
-                      onclick="changeUrl()"
+                      @click="checkCart()"
                     >
                       Aceptar
                     </button>
@@ -368,6 +368,47 @@ export default {
   components: {
     CombineFlavor,
     CombineOrnament,
+  },
+  mounted() {
+    this.$store.getters.getProducts.forEach((product) => {
+      const productElement = document.getElementById(`${product.lbl}`);
+      if (productElement)
+        productElement.append(` restantes: ${product.remaining}`);
+    });
+  },
+  methods: {
+    setTotal() {
+      let total = 0;
+      const descriptions = {
+        data: [],
+      };
+
+      this.$store.getters.getProducts.forEach((product, i) => {
+        const value = document.getElementById(`${product.id}`).value;
+        total += product.price * parseInt(value);
+
+        if (value > 0) {
+          const desc = document.getElementById(`description${i}`);
+          descriptions.data.push({
+            name: product.name,
+            description: desc.innerText,
+            quantity: parseInt(value),
+          });
+        }
+      });
+      descriptions.total = total;
+      if (total > 0) {
+        const modal = document.getElementById("price");
+        modal.textContent = `$${total.toFixed(2)} MXN`;
+      }
+      this.$store.commit("setCart", descriptions);
+    },
+    checkCart() {
+      if (this.$store.getters.getCart.data.length > 0) {
+        document.querySelector(".btn-close").click();
+        this.$router.push("form");
+      }
+    },
   },
 };
 </script>
